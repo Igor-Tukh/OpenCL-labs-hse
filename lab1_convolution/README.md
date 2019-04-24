@@ -1,5 +1,5 @@
 ## OpenCL lab1
-### input file `input.txt`, output file `output.txt`
+Input file `input.txt`, output file `output.txt`
 ### Build and run:
 #### Linux / macOS
 ```./run.sh```
