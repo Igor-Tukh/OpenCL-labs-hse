@@ -1,11 +1,10 @@
 __kernel void get_convolution(__global float* a, __global float* b, __global float* c, int n, int m) {
-    int id = get_global_id(0);
-    if (id >= n * n)
+    int row = get_global_id(0);
+    int column = get_global_id(1);
+    if (row >= n || column >= n)
         return;
-    int row = id / n;
-    int column = id % n;
     int hm = (m - 1) / 2;
-    c[id] = 0.0;
+    c[row * n + column] = 0.0;
 
     for (int k = -hm; k <= hm; k++) {
         if (row + k < 0 || row + k >= n)

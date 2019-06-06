@@ -63,6 +63,10 @@ int main() {
                 in >> b[row * m + column];
             }
         }
+
+        size_t const block_size = 16;
+        size_t const rounded_n = ((n + block_size - 1) / block_size) * block_size;
+
         // allocate device buffer to hold message
         cl::Buffer dev_a(context, CL_MEM_READ_ONLY, sizeof(float) * a.size());
         cl::Buffer dev_b(context, CL_MEM_READ_ONLY, sizeof(float) * b.size());
@@ -80,7 +84,8 @@ int main() {
         kernel_convolution.setArg(3, cl_int(n));
         kernel_convolution.setArg(4, cl_int(m));
 
-        queue.enqueueNDRangeKernel(kernel_convolution, cl::NullRange, cl::NDRange(n * n), cl::NullRange);
+        queue.enqueueNDRangeKernel(kernel_convolution, cl::NullRange, cl::NDRange(rounded_n, rounded_n),
+                cl::NDRange(block_size, block_size));
         queue.finish();
         queue.enqueueReadBuffer(dev_c, CL_TRUE, 0, sizeof(float) * c.size(), &c[0]);
 
